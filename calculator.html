@@ -1,0 +1,552 @@
+<!-- HTML calculator made in HTML and JS -->
+<html>
+<head>
+<title>CALCULATOR</title>
+<!--Creates the beauty of the calc.-->
+<style type="text/CSS">
+body {
+ background: #AF917D;
+ padding: 0;
+ margin: 0;
+}
+table {
+ background: #877337;
+ width: 100%;
+}
+td {
+background: Green;
+width: 25%;
+}
+button:hover {
+	background: Yellow;
+}
+button {
+	background: Lightblue;
+	width: 100%;
+}
+.useSth {
+	background: grey;
+}
+.options { 
+	background: grey;
+	width: 100;
+}
+#header { 
+	background: #E1A500;
+	width: "50%";
+	font-style: italic;
+}
+#ans {
+background: #A5913C
+}
+#entry, #angle, #newRow {
+	width: 100%;
+}
+</style>
+</head>
+<body onLoad="welcome()">
+
+<DIV id="ans">
+ <!--Answer area-->
+</DIV>
+
+<table border=1 cellspacing=0 cellpadding=0 color="black" link="blue" vlink="purple">
+<tr>
+<td colspan=2 id="header"><center>CALCULATOR</center></td><td><button onClick="setEntry(''); getObj('entry').focus();">clear</button></td>
+<td><button onClick="setAnswer(getObj('entry').value); display(ans);">Enter</button></td>
+</tr>
+<tr>
+<td colspan=2><input size=19 id="entry" value="0"></td>
+<td><button onClick="sqrt()">sqrt</button></td>
+<td><button onClick="sqr()">sqr</button></td>
+</tr>
+<DIV id="tfos">
+<!--Place for TheFour and other OperationS-->
+</DIV>
+<tr>
+<td width=25%><button onClick="sin()">Sin</button></td>
+<td width=25%><button onClick="cos()">Cos</button></td>
+<td width=25%><button onClick="tan()">Tan</button></td>
+<td width=25%><button onClick="log10()">log10</button></td>
+</tr>
+<tr>
+<td><button onClick="csc()">csc</button></td>
+<td><button onClick="sec()">sec</button></td>
+<td><button onClick="cot()">cot</button></td>
+<td><button onClick="ln()">ln</button></td>
+</tr>
+<tr>
+<td><button onClick="arcSin()">ASin</button></td>
+<td><button onClick="arcCos()">ACos</button></td>
+<td><button onClick="arcTan()">ATan</button></td>
+<td><button onClick="factorial ()">n!</button></td>
+</tr>
+<tr>
+<td><button onClick="arcCsc()">ACsc</button></td>
+<td><button onClick="arcSec()">ASec</button></td>
+<td><button onClick="arcCot()">ACot</button></td>
+<td><button onClick="nthroot()">n<sup>th</sup>root</button></td>
+</tr>
+<tr>
+<td><button onClick="pow()">x<sup>y</sup></button></td>
+<td><button onClick="useE()" class="useSth">use E</button></td>
+<td><button onClick="usePI()" class="useSth">usePI</button></td>
+<td><button onClick="useAnswer()" class="useSth">Ans</button></td>
+</tr>
+<tr>
+<td><select id="newRow" onChange="TFOSstatus()">
+<option>Tab</option>
+<option>on</option>
+<option>off</option>
+</select></td>
+<td><select id="angle">
+<option>Rad</option>
+<option>Deg</option>
+</select></td>
+<td><button onClick="permutation()">nPr</button></td>
+<td><button onClick="combination()">nCr</button></td>
+</tr>
+<tr>
+<td><button onClick="anyBaseLog()">log<sub>x</sub>Y</button></td>
+<td><button onClick="fibonacci()">Fibonacci</button></td>
+</tr>
+</table>
+
+<DIV align="left" style="background: #FFFF69">
+<button onClick="tips()" class="options">Tips</button><br>
+<button onClick="about()" class="options">About</button><br>
+<button onClick="navig()" class="options">Navigator</button>
+</DIV>
+
+<table>
+<tr>
+<th colspan=2><center><button style="background: brown;"><i>Settings<i></button></center></th>
+</tr>
+<tr>
+<td>Marquee Header</td>
+<td>
+<center>
+<select id="hMarq" onChange="hMarq()">
+<option>off</option>
+<option>on</option>
+</select>
+</center></td>
+</tr>
+<tr>
+<td>Time Elapsed: </td>
+<td id="info"></td>
+</tr>
+<tr>
+<td colspan=2>
+<center><a href="javascript:goTo(homePage)">Visit The Official Site</a></center></td>
+</tr>
+<tr>
+<td colspan=2>
+<center><a href="javascript:goTo(commentURL)"> Give a Comment </a></center></td>
+</tr>
+</table>
+
+<script type="text/javascript">
+//Global variable - ans
+var ans = 0;
+var sec=0, min=0, hr=0;
+var homePage = "http://www.everything12.comeze.com";
+var reqURL = homePage +"/q?r=1";
+var commentURL = homePage + "/guestbook";
+
+function req (url) {
+var xhr = new XMLHttpRequest();
+xhr.open ("GET",url ,true);
+xhr.onreadystatechange=function () {
+if (xhr.readyState==4)
+    { alert (xhr.responseText); }
+   }
+xhr.send(); 
+}
+
+function goTo (url)
+{
+//go to a url
+window.location=url
+}
+function navig ()
+{
+var n = navigator.appName
+var cn = navigator.appCodeName
+var v = navigator.appVersion
+var je = navigator.javaEnabled()
+
+alert ("Navigator Properties:\nApp. Name:\n\t"+n+"\nCode Name:\n\t"+cn+"\nVersion:\n\t"+v+"\nJava Enabled: \n\t"+je)
+}
+function getObj (id)
+{
+//returns HTML obj with the given id
+var obj = document.getElementById(id);
+return obj;
+}
+function getEntry ()
+{
+//retrieves input
+var entry = getObj('entry').value;
+return entry;
+}
+function display (answer)
+{
+//displays answer
+//answer = Math.round(answer) was possible but approximates 0.5 to 1
+//which creates much error in the answer such as in trig. functions
+ans = answer;
+getObj('ans').innerHTML="<br><i>Answer: "+answer+"</i><br>";
+window.scrollTo (0,0);
+}
+function showTFOS ()
+{
+getObj('tfos').innerHTML = "<tr><td><button onClick='plus()'>+</button></td><td><button onClick='minus()'>-</button></td><td><button onClick='multiply()'>*</button></td><td><button onClick='divide()'>/</button></td><td><button onClick='remainder()'>Rem</button></td><td><button onClick='percent()'>   %   </button></td><td><button onClick='rand()'>Rnd</button></td></tr>";
+window.scrollTo (0,0);
+}
+function TFOSstatus ()
+{
+var st = getObj('newRow').value;
+if (st=="on") 
+    { showTFOS (); }
+else if (st=="off") { 
+    getObj('tfos').innerHTML = "";
+   }
+}
+function setEntry (val)
+{
+//sets val to the entry
+getObj('entry').value = val;
+}
+function setAnswer (val)
+{
+ans = val;
+}
+function useAnswer ()
+{
+//sets ans to the entry
+setEntry (ans);
+getObj("entry").focus();
+}
+function usePI ()
+{
+//sets PI to the entry
+setEntry (Math.PI);
+getObj("entry").focus();
+}
+function useE ()
+{
+//sets natural log const. e to the entry
+setEntry (Math.E);
+getObj("entry").focus();
+}
+function welcome ()
+{
+var m = "Welcome user, this is an open source Calculator, version 1.0, written in HTML AND JS. Feel free to use it or to pass it to others.\n";
+alert (m);
+getObj("entry").focus();
+}
+function tips ()
+{
+m = "Most functions use two inputs. The first input is the one in the Answer area and the second is the one in the input box. This applies for every function that uses two inputs like +, *, /, nthroot, nPr, nCr etc.\n";
+
+m += "\nE.g. To solve log10(100) read as log of 100 to base 10, First press '100' ~> press 'Enter' ~> press '10' ~> finally press 'LOGx(Y)' also called any base log.\n";
+
+m += "\nTrig functions expect input in radian form by default but can be changed in the option tab.\n\nNAN - means Not A Number, like sqrt of negative numbers.\n\n1/zero is infinite, so csc(0) and sec(1) are infinite.\n\n1/infinity is zero.\nln(0) or log10(0) is -infinity.\n\nRem is Remainder from division of two numbers.\nRnd is random number generator.\n\n";
+alert (m);
+}
+function about ()
+{
+m = "This script is a scientific calculator  with functions like trigonometry, logarithm, nPr, factorial, nCr, etc.\n\n";
+m+="version: 1.0\nDate: 28-06-2013 G.C.";
+alert (m);
+}
+/*
+Script Kiddies are good at creating fun using codes although they lack real objectives in there works
+*/
+//Functions used for calculations
+function angle ()
+{
+//for sin(), cos(), tan()
+var entry = getEntry ();
+var d = getObj("angle").value;
+if (d=="Deg")
+   {
+var PI = Math.PI;
+var a = (PI/180)*entry;
+return a;
+     }
+else
+    { return entry; }
+}
+function toDeg (val)
+{
+//Returns the angle with the desired measure (Rad/Deg) for arcSin(), arcCos() . . . 
+var d = getObj("angle").value;
+	if (d=="Deg") {
+//return the degree measure of entry
+var PI = Math.PI;
+var a = (180/PI)*val;
+return a; 
+}
+//return the value as it is
+	else { return val; }
+}
+//sine function
+function sin ()
+{
+var entry = angle ()
+var a = Math.sin(entry)
+display (a)
+}
+//cosine function
+function cos ()
+{
+var entry = angle ()
+var a = Math.cos(entry)
+display (a)
+}
+//tangent function
+function tan ()
+{
+var entry = angle ()
+var a = Math.tan(entry)
+display (a)
+}
+//cosecant function
+function csc ()
+{
+var entry = angle ()
+var a = 1/Math.sin(entry)
+display (a)
+}
+//secant function
+function sec ()
+{
+var entry = angle ()
+var a = 1/Math.cos(entry)
+display (a)
+}
+//cotangent function
+function cot ()
+{
+var entry = angle ()
+var a = 1/Math.tan(entry)
+display (a)
+}
+//arcsine function
+function arcSin ()
+{
+var entry = getEntry ()
+var aRad = Math.asin(entry)
+var a = toDeg (aRad)
+display (a)
+}
+//arccosine function
+function arcCos ()
+{
+var entry = getEntry ()
+var aRad = Math.acos(entry)
+var a = toDeg (aRad)
+display (a)
+}
+//arctangent function
+function arcTan ()
+{
+var entry = getEntry ()
+var aRad = Math.atan(entry)
+var a = toDeg (aRad)
+display (a)
+}
+//arccosecant function
+function arcCsc ()
+{
+var entry = getEntry ()
+var aRad = Math.asin(1/entry)
+var a = toDeg (aRad)
+display (a)
+}
+//arcsecant function
+function arcSec ()
+{
+var entry = getEntry ()
+var aRad = Math.acos(1/entry)
+var a = toDeg (aRad)
+display (a)
+}
+//arccotangent function
+function arcCot ()
+{
+var entry = getEntry ()
+var aRad = Math.atan(1/entry)
+var a = toDeg (aRad)
+display (a)
+}
+function percent ()
+{
+var entry = getEntry ()
+var a = entry*100
+display (a)
+}
+function log10 ()
+{
+//logx=logex=lnx by default 
+//log10x=lnx/ln10
+var entry = getEntry ();
+var a = Math.log(entry)/Math.log(10)
+display (a);
+}
+function ln ()
+{
+//default logx is to the base e
+//i.e. = lnx
+var entry = getEntry ()
+var a = Math.log(entry)
+display (a)
+}
+function sqr ()
+{
+var entry = getEntry ()
+var a = entry*entry
+display (a)
+}
+function sqrt ()
+{
+var entry = getEntry ()
+var a = Math.sqrt(entry)
+display (a)
+}
+function fac (a)
+{
+if (a>1) { return (a*fac(a-1)); }
+else	 { return (1); 			}
+}
+function factorial () 
+{
+var entry = getEntry ()
+var a = fac (entry);
+display (a);
+}
+function pow ()
+{
+var entry = getEntry ()
+var a = Math.pow (ans,entry);
+display(a);
+}
+function plus ()
+{
+var entry = getEntry ()
+//returns number from the input object w/c expects string by default
+//it prevents misuse of '+' operator as string concat. operator
+entry = Number (entry)
+var a = ans+entry
+display (a)
+}
+function minus ()
+{
+var entry = getEntry ()
+var a = ans-entry
+display (a)
+}
+function multiply ()
+{
+var entry = getEntry ()
+var a = ans*entry
+display (a)
+}
+function divide ()
+{
+var entry = getEntry ()
+var a = ans/entry
+display (a)
+}
+function remainder ()
+{
+var entry = getEntry ()
+var a = ans%entry
+display (a)
+}
+function permutation ()
+{
+//npr i.e. ans p entry
+var entry = getEntry ()
+var n = fac (ans)
+var nmr = fac (ans-entry)
+var a = n/nmr
+display (a)
+}
+function combination ()
+{
+//ncr i.e. ans c entry
+var entry = getEntry ()
+var n = fac (ans)
+var nmr = fac (ans-entry)
+var r = fac (entry)
+var a = n/(nmr*r)
+display (a)
+}
+function rand ()
+{
+//Random number generator b/n 0 and 1
+var entry = getEntry ()
+var a = Math.random()
+display (a)
+}
+function hMarq()
+{
+var choice = getObj('hMarq').value
+if (choice=="on") 
+ {
+getObj('header').innerHTML="<marquee>CALCULATOR</marquee>";
+  }
+else 
+ { 
+getObj('header').innerHTML="<center>CALCULATOR</center>";
+  }
+window.scrollTo(0,0);
+}
+function nthroot ()
+{
+var entry = getEntry ()
+var n = 1/ans
+var a = Math.pow (entry,n)
+display (a)
+}
+function fibo (n)
+{
+if (n<=0) { return "Syntax Error"; }
+else if (n==1) { return 0; }
+else if (n==2) { return 1; }
+else {
+   return (fibo(n-1)+fibo(n-2));
+  }
+}
+function fibonacci () {
+var entry = getEntry ()
+var a = fibo (entry)
+display (a)
+}
+function anyBaseLog () {
+var entry = getEntry()
+var a = Math.log(ans)/Math.log(entry)
+display (a)
+}
+function timer () {
+var info = getObj("info");
+ if (sec==60) { sec=0; min+=1; }
+ if (min==60) { min=0; hr+=1; }
+ if (min!=0 && sec==0) 
+     { req("#"); }
+info.innerHTML = "<center>"+ hr+" : "+min+" : "+sec+"</center>";
+sec++;
+}
+setInterval ("timer()",1000);
+
+//Version: calc v1.0
+//Upcoming: calc v2.0 comes with string resolver that allows expressions to be used all together instead of buttons
+//Date: 28-06-2013 G.C.
+//Dedicated to csp and gsjfoet
+//THE END . . . TE . . RA . . .
+</script>
+</body>
+</html>
